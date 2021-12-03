@@ -1,5 +1,8 @@
 #include <vector>
 #include <map>
+#include <set>
+#include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -12,56 +15,60 @@ public:
         int j;
     };
     
+
+    bool duplicate(int i, int j, int k) {
+
+        return i == j or j == k or i == k;
+
+    }
+
     vector<vector<int>> threeSum(vector<int>& nums) {
-         
-        vector<vector<int>> res = {};
         
-        if (nums.size() < 3) {
-            
-            return {};
-            
-        }
-        
-        map<int, vector<coord>> map_sum;
+        map<int, int> num;
+
         int n = nums.size();
-        int sum;
-        
+
+        for (int i = 0;i < n; ++i) {
+
+            num[nums[i]] = i;
+
+        }
+
+        vector<vector<int>> res;
+        set<vector<int>> set_res;
         for (int i = 0; i < n; ++i) {
-            
+
             for (int j = i + 1; j < n; ++j) {
-                
-                if (map_sum.find(sum) == map_sum.end()) {
-                    map_sum[sum] = {};
-                }
-                map_sum[sum].push_back(coord(i, j));
-                
-            }
-            
-        }
-        
-        for (int k = 0; k < n; ++k) {
-            
-            if ((map_sum.find(-nums[k]) != map_sum.end())) {
-                
-                auto pairs = map_sum[-nums[k]];
-                for (auto& p: pairs) {
-                    
-                    if (k > p.j) {
-                        res.push_back({nums[k], nums[p.i], nums[p.j]});
+
+                if (num.find(-nums[i] - nums[j]) != num.end()) {
+
+                    int k = num[-nums[i] - nums[j]];
+                    std::vector<int> v = { nums[i], nums[j], nums[k] };
+                    int min = v[std::distance(std::min_element(v.begin(), v.end()), v.begin())];
+                    int max = v[std::distance(std::max_element(v.begin(), v.end()), v.begin())];
+                    int avg = nums[i] + nums[j] + nums[k] - min - max;
+                    v = {min, avg, max};
+                    if ((not duplicate(i, j, k)) and (set_res.find(v) == set_res.end())) {
+
+                        set_res.insert(v);
+                        res.push_back(v);
+
                     }
-                    
+
                 }
-                
+
+
             }
-            
+
         }
+
         return res;
-        
+
     }
 };
 
 int main() {
 
 
-    
+
 }
